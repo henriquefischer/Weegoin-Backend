@@ -34,3 +34,28 @@ ii - Establishment:
 		Output: Json com informações sobre as festas que o $idEstablishment possui cadastradas
 
 iii - Users:
+	sing_up():
+		Input: $name,$password,$profilePhoto,$idFacebook,$facebookToken
+		Output: $token de login
+      
+	login():
+		Input: $name,$password
+		Output: $token de login
+
+        
+       edit_user():
+		Input: $token,$name,$password,$idFacebook,$facebookToken
+		Output: Confirmação de alteração
+     
+        go_party():
+		Input: $token, $idEvent
+		Output: Confirmação de alteração
+      
+        
+        favorite():
+		Input: $token,$idEstablishment
+		Output: Confirmação de alteração
+        
+        badges():
+		Input: $token
+		Output: Lista de badges que o usuario possui        
