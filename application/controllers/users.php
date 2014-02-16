@@ -2,30 +2,44 @@
 
 class Users extends CI_Controller {
 
-	public function sing_up($name,$password,$profilePhoto,$idFacebook,$facebookToken)
+	
+        
+        /*Cria novo usuario
+         * 
+         * @param: idFacebook,
+         * @param: facebookToken
+         * @return data(JSON)
+         * 
+         */
+        
+        public function facebook_sing_up($idFacebook, $facebookToken)
 	{
-            //usuario existe?
-            if(!$this->user_exist($name,$password,$idFacebook)){
+            if(!$this->user_exist($idFacebook)){
                 $message = "User already exist";
                 $status_code = 500;
                 show_error($message, $status_code);
             }
             $this->load->model('Users_model');
-            $this->Users_model->sing_up($name,$password,$profilePhoto,$idFacebook,$facebookToken);
-            $this->login($name,$password);
-            
+            $data = $this->Users_model->facebook_sing_up($idFacebook,$facebookToken);
+            //$this->login($name,$password);
         }
-        
-        public function login($name,$password){
+         /* Loga usuario já existente
+          * 
+         * @param: idFacebook,
+         * @param: facebookToken
+         * @return data(JSON)
+         * 
+         */      
+        public function facebook_login($idFacebook,$facebookToken){
             $this->load->model('Users_model');
-            $token = $this->Users_model->login($name,$password);
-            $this->load->view('list_events',$token);
+            $data = $this->Users_model->login_facebook($idFacebook,$facebookToken);
+            $this->load->view('list_events',$data);
         }
         
-        private function user_exist($name,$password,$idFacebook)
+        private function user_exist($name,$password)
         {
             $this->load->model('Users_model');
-            if($this->Users_model->user_exist($name,$password,$idFacebook)){
+            if($this->Users_model->user_exist($name,$password)){
                 return TRUE;
             }
             return FALSE;
@@ -80,4 +94,17 @@ class Users extends CI_Controller {
         }
         
 }
+/*public function sing_up($name,$password,$email)
+	{
+            //usuario existe?
+            if(!$this->user_exist($name,$password.$email)){
+                $message = "User already exist";
+                $status_code = 500;
+                show_error($message, $status_code);
+            }
+            $this->load->model('Users_model');
+            $this->Users_model->sing_up($name,$password,$email);
+            $this->login($name,$password);
+            
+        }*/
 

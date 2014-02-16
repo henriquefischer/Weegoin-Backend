@@ -10,16 +10,13 @@ class Establishment_model extends CI_Model {
     public function list_establishment()
     {
         $this->load->database();
-        if(isset($geolocation)){
+        //if(isset($geolocation)){
            // TO-DO Geolocation Queries
-        }else{
-            $now = new DateTime('NOW');
-            $date = $now->format('Y-m-d H:i:s');
-            $next = 1;
-            $sql = "SELECT * FROM `Establishment` ORDER BY RAND() LIMIT ?,5;";
-            $query = $this->db->query($sql,array($next));
+       // }else{
+            $sql = "SELECT * FROM `Establishment` ORDER BY RAND();";
+            $query = $this->db->query($sql);
             return $query->result_array();
-        }
+        //}
     }
     
     public function list_single_establishment($idEstablishment){

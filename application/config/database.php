@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = '';
-$db['default']['database'] = 'appWeego';
+$db['default']['hostname'] = 'us-cdbr-east-05.cleardb.net';
+$db['default']['username'] = 'bf63068e2214c5';
+$db['default']['password'] = 'fdabaf26';
+$db['default']['database'] = 'heroku_2754969a3a24ed6';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
