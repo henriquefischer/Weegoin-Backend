@@ -2,27 +2,6 @@
 
 class Users extends CI_Controller {
 
-	
-        
-        /*Cria novo usuario
-         * 
-         * @param: idFacebook,
-         * @param: facebookToken
-         * @return data(JSON)
-         * 
-         */
-        
-        public function facebook_sing_up($idFacebook, $facebookToken)
-	{
-            if(!$this->user_exist($idFacebook)){
-                $message = "User already exist";
-                $status_code = 500;
-                show_error($message, $status_code);
-            }
-            $this->load->model('Users_model');
-            $data = $this->Users_model->facebook_sing_up($idFacebook,$facebookToken);
-            //$this->login($name,$password);
-        }
          /* Loga usuario já existente
           * 
          * @param: idFacebook,
@@ -32,11 +11,16 @@ class Users extends CI_Controller {
          */      
         public function facebook_login($idFacebook,$facebookToken){
             $this->load->model('Users_model');
-            $data = $this->Users_model->login_facebook($idFacebook,$facebookToken);
-            $this->load->view('list_events',$data);
+            if(!$this->Users_model->user_exist($idFacebook)){
+                $data = $this->Users_model->login_facebook($idFacebook,$facebookToken);
+                $this->load->view('list_events',$data);
+            }
+            
+            $data = $this->Users_model->facebook_sing_up($idFacebook,$facebookToken);
+            
         }
         
-        private function user_exist($name,$password)
+        private function user_exist($idFacebook,$password)
         {
             $this->load->model('Users_model');
             if($this->Users_model->user_exist($name,$password)){

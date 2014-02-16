@@ -7,7 +7,12 @@ class Events_model extends CI_Model {
       // Call the Model constructor
       parent::__construct();
     }
-    //$token, $geolocation, $next
+   /**
+    * Retorna 4 eventos a partir de next
+     * 
+     * @param num next
+     * @return token,name,photo
+     */
     public function list_events($next)
     {
         $this->load->database();
@@ -22,7 +27,12 @@ class Events_model extends CI_Model {
             return $query->result_array();
         }
     }
-    
+    /**
+     * Retorna informações específicas de um evento
+     * 
+     * @param $idEvent
+     * @return token,name,photo
+     */
     public function list_single_envent($idEvent){
         $this->load->database();
         $sql = "SELECT * FROM `Events` WHERE `idEvent` = ?;";
