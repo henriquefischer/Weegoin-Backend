@@ -33,7 +33,6 @@ class Users_model extends CI_Model {
                   $data['token'] = $token;
                   print_r($data);
             }
-            echo "Wrong!";
             return FALSE;
         }
     
