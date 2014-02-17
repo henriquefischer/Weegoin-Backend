@@ -1,4 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+header('Access-Control-Allow-Origin: *');
 
 class Users extends CI_Controller {
 
@@ -9,14 +10,15 @@ class Users extends CI_Controller {
          * @return data(JSON)
          * 
          */      
-        public function facebook_login($idFacebook,$facebookToken){
+        public function facebook_login($idFacebook,$facebookToken,$userToken){
             $this->load->model('Users_model');
-            if(!$this->Users_model->user_exist($idFacebook)){
-                $data = $this->Users_model->login_facebook($idFacebook,$facebookToken);
+            if($this->Users_model->user_exist($idFacebook)){
+                $data['query'] = $this->Users_model->login_facebook($idFacebook,$facebookToken);
+                $this->load->view('list_events',$data);
+            }else{
+                $data['query'] = $this->Users_model->facebook_sing_up($idFacebook,$facebookToken,$userToken);
                 $this->load->view('list_events',$data);
             }
-            
-            $data = $this->Users_model->facebook_sing_up($idFacebook,$facebookToken);
             
         }
         

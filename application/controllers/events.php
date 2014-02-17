@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+header('Access-Control-Allow-Origin: *');
 class Events extends CI_Controller {
 
 	public function list_events($token,$next)

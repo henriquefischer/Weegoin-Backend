@@ -9,7 +9,14 @@ class Users_model extends CI_Model {
      * @return token,name,photo
      */
 
-    public function facebook_sing_up($idFacebook, $facebookToken){
+    public function facebook_sing_up($idFacebook, $facebookToken,$userToken){
+        
+    
+        $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=1446634675566039&client_secret=6c4bfea9dcd163d9ed0177353e1245c4&fb_exchange_token=".$userToken;
+        $querystring = file_get_contents($url);
+        $a = explode('&', $querystring);
+        $b = explode('=', $a[0]);
+        $token = $b[1];
         $url = "https://graph.facebook.com/".$idFacebook."?access_token=".$facebookToken."&fields=id,name,email,picture.height(400).type(square),age_range";
         $json = json_decode(file_get_contents($url));
         $data['name'] = $json->name;
@@ -23,15 +30,15 @@ class Users_model extends CI_Model {
     
     public function login_facebook($idFacebook,$facebookToken){
             $this->load->database();
-            $sql = "SELECT * FROM `Users` WHERE `facebookToken`=? AND `idFacebook`=?";
-            $query = $this->db->query($sql,array($facebookToken,$idFacebook));
+            $sql = "SELECT * FROM `Users` WHERE `idFacebook`=?";
+            $query = $this->db->query($sql,array($idFacebook));
             $data = $query->result_array();
             if($query->num_rows() > 0){
                   $token = md5(uniqid(rand(), true));
                   $sql = "UPDATE `Users` SET `token` = ?, `lastLogin` = ? WHERE `facebookToken` = ? AND `idFacebook` = ?;";
                   $query = $this->db->query($sql,array($token,date('Y-m-d H:i:s'),$facebookToken,$idFacebook));
                   $data['token'] = $token;
-                  print_r($data);
+                  return $data;
             }
             return FALSE;
         }
