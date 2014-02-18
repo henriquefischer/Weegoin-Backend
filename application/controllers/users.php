@@ -49,14 +49,15 @@ class Users extends CI_Controller {
             $this->load->view('list_events',$data);
         }
         
-        public function go_party($token, $idEvent){
-            if(!$this->token->is_token_valid($token)){
+        public function go_party($idFacebook,$idEvent){
+            /*if(!$this->token->is_token_valid($token)){
                 $message = "Invalid Token";
                 $status_code = 500;
                 show_error($message, $status_code);
-            }
+            }*/
             $this->load->model('Users_model');
-            $this->User_model->go_party($token,$idEvent);
+            $data['query'] = $this->User_model->go_party($idFacebook,$idEvent);
+            $this->load->view('list_events',$data);
         }
         
         public function favorite($token, $idEstablishment){

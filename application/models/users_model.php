@@ -9,10 +9,8 @@ class Users_model extends CI_Model {
      * @return token,name,photo
      */
 
-    public function facebook_sing_up($idFacebook, $facebookToken,$userToken){
-        
-    
-        $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=1446634675566039&client_secret=6c4bfea9dcd163d9ed0177353e1245c4&fb_exchange_token=".$userToken;
+    public function facebook_sing_up($idFacebook, $facebookToken){
+        $url = "https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=1446634675566039&client_secret=6c4bfea9dcd163d9ed0177353e1245c4&fb_exchange_token=".$facebookToken;
         $querystring = file_get_contents($url);
         $a = explode('&', $querystring);
         $b = explode('=', $a[0]);
@@ -23,9 +21,9 @@ class Users_model extends CI_Model {
         $data['email'] = $json->email;
         $data['profilePhoto'] = $json->picture->data->url;
         $data['idFacebook'] = $idFacebook;
-        $data['facebookToken'] = $facebookToken;
+        $data['facebookToken'] = $token;
         $this->facebook_create_user($data);
-        return $this->login_facebook($idFacebook,$facebookToken);
+        return $this->login_facebook($idFacebook,$token);
     }
     
     public function login_facebook($idFacebook,$facebookToken){
@@ -35,9 +33,9 @@ class Users_model extends CI_Model {
             $data = $query->result_array();
             if($query->num_rows() > 0){
                   $token = md5(uniqid(rand(), true));
-                  $sql = "UPDATE `Users` SET `token` = ?, `lastLogin` = ? WHERE `facebookToken` = ? AND `idFacebook` = ?;";
-                  $query = $this->db->query($sql,array($token,date('Y-m-d H:i:s'),$facebookToken,$idFacebook));
-                  $data['token'] = $token;
+                  $sql = "UPDATE `Users` SET `token` = ?, `lastLogin` = ? WHERE `idFacebook` = ?;";
+                  $query = $this->db->query($sql,array($token,date('Y-m-d H:i:s'),$idFacebook));
+                  $data['session_token'] = $token;
                   return $data;
             }
             return FALSE;
@@ -53,17 +51,15 @@ class Users_model extends CI_Model {
         return;
     }
     
-    public function sing_up($name,$password,$profilePhoto,$email)
+    /*public function sing_up($name,$password,$profilePhoto,$email)
 	{         
             $this->load->database();
-            $sql = "INSERT INTO `Users`
-            (`name`,'password`,`profilePhoto`,`email`)
-            VALUES
+            $sql = "INSERT INTO `Users` (`name`,'password`,`profilePhoto`,`email`) VALUES
             (?,?,?,?);";
             $query = $this->db->query($sql,array($name,$password,$profilePhoto,$email));
             return;
           
-        }
+        }*/ 
 
         public function user_exist($idFacebook)
 	{         
@@ -119,14 +115,18 @@ class Users_model extends CI_Model {
             return FALSE;
         }
         
-        public function go_party($token, $idEvent){
-            if(!$this->token->is_token_valid($token)){
-                $message = "Invalid Token";
-                $status_code = 500;
-                show_error($message, $status_code);
+        public function go_party($idEvent,$idFacebook){
+            $this->load->database();
+            $sql = "SELECT * FROM `goevent` WHERE `idUser`=? AND `idEvent`=?)";
+            $query = $this->db->query($sql,array($idFacebook,$idEvent));
+            if($query->num_rows() === 0){
+                  $sql = "INSERT INTO `goevent` (`idUser`,`idEvent`) VALUES (?,?);";
+                  $query = $this->db->query($sql,array($idFacebook,$idEvent));
+                  return $token;
             }
-            $this->load->model('Users_model');
-            $this->User_model->go_party($token,$idEvent);
+            return FALSE;
+
+            
         }
         
         public function favorite($token, $idEstablishment){
